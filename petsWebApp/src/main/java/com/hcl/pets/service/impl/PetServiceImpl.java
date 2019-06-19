@@ -2,10 +2,16 @@ package com.hcl.pets.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.hcl.pets.bean.PetBean;
 import com.hcl.pets.model.Pet;
 import com.hcl.pets.repository.PetRepository;
 import com.hcl.pets.service.PetService;
@@ -15,29 +21,30 @@ import com.hcl.pets.service.PetService;
  *
  */
 @Service
-public class PetServiceImpl implements PetService{
+public class PetServiceImpl implements PetService {
 
 	@Autowired
 	private PetRepository petRepository;
-	
+
+	@Autowired
+	ModelMapper modelMapper;
+
+	@Bean
+	public ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+
 	@Override
-	public Object getAllPets() {
-		
-		Object returnObj = null;
-		List<Pet> petList = null;
-		try {
-			petList = petRepository.findAll();
-			System.out.println("petList : "+petList);
-			if(petList != null) {
-				returnObj = petList;
-			} else {
-				returnObj = "!!Welcome to Home page !!";
-			}
-		} catch (Exception e) {
-			returnObj = "Went somthing wrong ";
-			e.printStackTrace();
+	public List<PetBean> getAllPets() {
+
+		List<PetBean> petBeanList = new ArrayList<>();
+		List<Pet> petList = petRepository.findAll();
+		if (petList != null && !petList.isEmpty()) {
+			petList.forEach(pet -> petBeanList.add(modelMapper.map(pet, PetBean.class)));
+		} else {
+			throw new CustomException("Record not found");
 		}
-		return returnObj;
+		return petBeanList;
 	}
 
 	@Override
@@ -47,11 +54,11 @@ public class PetServiceImpl implements PetService{
 		try {
 			petList = petRepository.findByUserId(String.valueOf(userId));
 			System.out.println(petList);
-			
-			if(petList != null) {
+
+			if (petList != null) {
 				returnObj = petList;
 			} else {
-				returnObj = "Sorry! Pet doesn't exist with id "+userId;
+				returnObj = "Sorry! Pet doesn't exist with id " + userId;
 			}
 		} catch (Exception e) {
 			returnObj = "Went Somthing wrong.";
@@ -62,12 +69,12 @@ public class PetServiceImpl implements PetService{
 
 	@Override
 	public Object petDetail(long petId) {
-		
+
 		Object returnObj = null;
-		Pet petDetail = null;
+		Optional<Pet> petDetail = null;
 		try {
-			petDetail = petRepository.getOne(petId);
-			if(petDetail != null) {
+			petDetail = petRepository.findById(petId);
+			if (petDetail != null) {
 				returnObj = petDetail;
 			} else {
 				returnObj = "Sorry! Pet doesn't exist.";
@@ -77,6 +84,44 @@ public class PetServiceImpl implements PetService{
 			e.printStackTrace();
 		}
 		return returnObj;
+	}
+
+	@Override
+	public String buyPet(long buyPetId, int userId) {
+
+		Object retObject = null;
+		Optional<Pet> petDetails = petRepository.findById(buyPetId);
+
+		if (petDetails != null) {
+			Pet myPet = petDetails.get();
+			myPet.setPetOwnerId(userId);
+			retObject = petRepository.save(myPet);
+		}
+		if (retObject != null) {
+			return "User " + userId + " buyed successfully";
+		} else {
+			return "Updation failed";
+		}
+	}
+
+	@Override
+	public String addMyPet(Pet pet) {
+		Object petSaved = petRepository.save(pet);
+		if (petSaved != null)
+			return "Pet added successfully";
+		else
+			return "Pet adding failed";
+	}
+
+	@Override
+	public Optional<Pet> searchPet(String petName, int petAge, String petPlace) {
+		Optional<Pet> petList = null;
+		try {
+			petList = petRepository.findPetByNameByAgeByPlace(petName, petAge, petPlace);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return petList;
 	}
 
 }

@@ -1,37 +1,15 @@
-package com.hcl.pets.model;
+package com.hcl.pets.bean;
 
-import java.io.Serializable;
+public class PetBean {
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-/**
- * @author Laxman verma
- *
- */
-@Entity
-@Table(name = "PETS")
-public class Pet implements Serializable {
-
-	@Id
-	@Column(name = "ID")
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
-	@Column(name = "PET_NAME")
 	private String petName;
 	
-	@Column(name = "PET_AGE")
 	private int petAge;
 	
-	@Column(name = "PET_PLACE")
 	private String petPlace;
 	
-	@Column(name = "PET_OWNERID")
 	private long petOwnerId;
 
 	public long getId() {
@@ -66,8 +44,6 @@ public class Pet implements Serializable {
 		this.petPlace = petPlace;
 	}
 
-
-
 	public long getPetOwnerId() {
 		return petOwnerId;
 	}
@@ -78,7 +54,21 @@ public class Pet implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Pet [id=" + id + ", petName=" + petName + ", petAge=" + petAge + ", petPlace=" + petPlace
+		return "PetBean [id=" + id + ", petName=" + petName + ", petAge=" + petAge + ", petPlace=" + petPlace
 				+ ", petOwnerId=" + petOwnerId + "]";
+	}
+
+	public PetBean(long id, String petName, int petAge, String petPlace, long petOwnerId) {
+		super();
+		this.id = id;
+		this.petName = petName;
+		this.petAge = petAge;
+		this.petPlace = petPlace;
+		this.petOwnerId = petOwnerId;
+	}
+
+	public PetBean() {
+		super();
+		// TODO Auto-generated constructor stub
 	}
 }
