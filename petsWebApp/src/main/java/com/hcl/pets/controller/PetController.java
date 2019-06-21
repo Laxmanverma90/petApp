@@ -32,7 +32,7 @@ public class PetController {
 	}
 
 	@GetMapping("/myPets/{userId}")
-	public Object myPets(@PathVariable long userId) {
+	public Optional<Pet> myPets(@PathVariable long userId) {
 		return petService.getMyPets(userId);
 	}
 

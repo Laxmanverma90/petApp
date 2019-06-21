@@ -1,6 +1,5 @@
 package com.hcl.pets.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +16,7 @@ import com.hcl.pets.model.Pet;
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
 	@Query("from Pet p where petOwnerId = :userId")
-	public List<Pet> findByUserId(String userId);
+	public Optional<Pet> findByUserId(long userId);
 	
 	
 	@Query("from Pet p where p.petName= :petName  and p.petAge= :petAge and p.petPlace= :petPlace")

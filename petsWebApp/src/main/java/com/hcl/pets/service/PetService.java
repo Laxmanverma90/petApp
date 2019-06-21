@@ -12,7 +12,7 @@ public interface PetService {
 
 	public List<PetBean> getAllPets();
 	
-	public Object getMyPets(long userId);
+	public Optional<Pet> getMyPets(long userId);
 	
 	public Object petDetail(long petId);
 	

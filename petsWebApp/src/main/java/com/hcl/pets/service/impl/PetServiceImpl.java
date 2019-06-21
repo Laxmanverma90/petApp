@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.hcl.pets.bean.PetBean;
@@ -48,23 +46,14 @@ public class PetServiceImpl implements PetService {
 	}
 
 	@Override
-	public Object getMyPets(long userId) {
-		Object returnObj = null;
-		List<Pet> petList = null;
-		try {
-			petList = petRepository.findByUserId(String.valueOf(userId));
+	public Optional<Pet> getMyPets(long userId) {
+//		List<Pet> petList = null;
+			Optional<Pet> petList = petRepository.findByUserId(userId);
 			System.out.println(petList);
-
-			if (petList != null) {
-				returnObj = petList;
-			} else {
-				returnObj = "Sorry! Pet doesn't exist with id " + userId;
+			if(!petList.isPresent()) {
+				throw new CustomException("Record not found");
 			}
-		} catch (Exception e) {
-			returnObj = "Went Somthing wrong.";
-			e.printStackTrace();
-		}
-		return returnObj;
+		return petList;
 	}
 
 	@Override

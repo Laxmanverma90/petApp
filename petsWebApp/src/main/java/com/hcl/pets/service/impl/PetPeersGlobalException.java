@@ -17,10 +17,10 @@ public class PetPeersGlobalException {
 		return new ResponseEntity<ErrorResposne>(resposne, HttpStatus.NOT_FOUND);
 	}
 	
-	@ExceptionHandler(CustomException.class)
+/*	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<ErrorResposne> badRequestException(CustomException errMsg) {
 		ErrorResposne resposne = new ErrorResposne();
 		resposne.setMessage(errMsg.getMessage());
 		return new ResponseEntity<ErrorResposne>(resposne, HttpStatus.BAD_REQUEST);
-	}
+	}*/
 }
